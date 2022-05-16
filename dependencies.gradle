@@ -1,0 +1,122 @@
+ext.versions = [
+        // Note: Define versions with "Version" suffix may appear redundant, but it may be useful for search purpose
+        sourceCompat                   : JavaVersion.VERSION_1_8,
+        targetCompat                   : JavaVersion.VERSION_1_8,
+        jvmTarget                      : JavaVersion.VERSION_1_8.toString(),
+        minSdk                         : 21,
+        targetSdk                      : 31,
+        compileSdk                     : 31,
+        versionNameMajor               : 1,
+        versionNameMinor               : 0,
+        versionNamePatch               : 0,
+        versionNamePreReleaseClassifier: "alpha",
+        versionNamePreReleaseNumber    : 1,
+        androidXLifecycleVersion       : '2.3.1',
+        appcompatXVersion              : '1.4.1',
+        composeVersion                 : '1.1.1',
+        composeActivity                : '1.4.0',
+        junitVersion                   : '4.13.2',
+        ktxCoreVersion                 : '1.7.0',
+        navigationVersion              : '2.4.1',
+        daggerHiltVersion              : '2.38.1',
+        retrofitVersion                : '2.9.0',
+        moshiVersion                   : '1.13.0',
+        okhttpVersion                  : '4.9.3',
+]
+
+ext.deps = [
+        gradlePlugin: [
+                hilt: "com.google.dagger:hilt-android-gradle-plugin:${versions.daggerHiltVersion}"
+        ],
+        kotlin      : [
+                ktx: [
+                        core: "androidx.core:core-ktx:${versions.ktxCoreVersion}",
+                ],
+        ],
+        support     : [
+                lifecycleRuntime: "androidx.lifecycle:lifecycle-runtime-ktx:${versions.androidXLifecycleVersion}",
+                composeActivity : "androidx.activity:activity-compose:${versions.composeActivity}",
+        ],
+        test        : [
+                junit  : "junit:junit:${versions.junitVersion}",
+                compose: "androidx.compose.ui:ui-test-junit4:${versions.composeVersion}",
+        ],
+        ui          : [
+                compose: [
+                        ui        : "androidx.compose.ui:ui:${versions.composeVersion}",
+                        tooling   : "androidx.compose.ui:ui-tooling:${versions.composeVersion}",
+                        preview   : "androidx.compose.ui:ui-tooling-preview:${versions.composeVersion}",
+                        material  : "androidx.compose.material:material:${versions.composeVersion}",
+                        navigation: "androidx.navigation:navigation-compose:${versions.navigationVersion}"
+                ]
+        ],
+        di          : [
+                hilt        : "com.google.dagger:hilt-android:${versions.daggerHiltVersion}",
+                hiltCompiler: "com.google.dagger:hilt-android-compiler:${versions.daggerHiltVersion}"
+        ],
+        retrofit    : [
+                retrofit      : "com.squareup.retrofit2:retrofit:${versions.retrofitVersion}",
+                moshiConverter: "com.squareup.retrofit2:converter-moshi:${versions.retrofitVersion}",
+        ],
+        okhttp      : [
+                okhttp            : "com.squareup.okhttp3:okhttp:${versions.okhttpVersion}",
+                httpLogInterceptor: "com.squareup.okhttp3:logging-interceptor:${versions.okhttpVersion}",
+        ],
+]
+
+ext.appVersionNameDebugSuffix = '-' + 'git rev-parse --verify --short HEAD'.execute().text.trim()
+ext.appVersionName = generateVersionName()
+
+private String generateVersionName() {
+    String versionName = "${versions.versionNameMajor}.${versions.versionNameMinor}.${versions.versionNamePatch}"
+    if ((versions.versionNamePreReleaseClassifier) != null) {
+        versionName += "-${versions.versionNamePreReleaseClassifier}"
+        if ((versions.versionNamePreReleaseNumber) != null) {
+            versionName += ".${versions.versionNamePreReleaseNumber}"
+        }
+    }
+    return versionName
+}
+
+ext.appVersionCode = generateVersionCode()
+
+private Integer generateVersionCode() {
+    return versions.minSdk * 10000000 + versions.versionNameMajor * 10000 + versions.versionNameMinor * 100 + versions.versionNamePatch
+}
+
+ext.coverageExcludesFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        '**/coreui/**',
+        '**/iot/**',//TODO remove ?
+        '**/ui/**',
+        '**/ui/databinding/**',
+        '**/android/databinding/*',
+        '**/androidx/databinding/*',
+        '**/di/module/*',
+        '**/*MapperImpl*.*',
+        '**/*$ViewInjector*.*',
+        '**/*$ViewBinder*.*',
+        '**/BuildConfig.*',
+        '**/*Component*.*',
+        '**/*BR*.*',
+        '**/Manifest*.*',
+        '**/*$Lambda$*.*',
+        '**/*Companion*.*',
+        '**/*Module.*',
+        '**/*Dagger*.*',
+        '**/*MembersInjector*.*',
+        '**/*_Factory*.*',
+        '**/*_Provide*Factory*.*',
+        '**/*Extensions*.*',
+        '**/*Fragment.*',
+        '**/*Activity.*',
+        '**/*Adapter.*',
+        '**/*ViewPager.*',
+        '**/*ViewHolder.*',
+        '**/*$Result.*', /* filtering `sealed` and `data` classes */
+        '**/*$Result$*.*'/* filtering `sealed` and `data` classes */
+]
